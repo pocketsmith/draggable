@@ -16,7 +16,7 @@ export const scroll = Symbol('scroll');
  */
 export const defaultOptions = {
   speed: 6,
-  sensitivity: 50,
+  sensitivity: [50, 50, 50, 50],
   scrollableElements: [],
 };
 
@@ -201,6 +201,7 @@ export default class Scrollable extends AbstractPlugin {
     cancelAnimationFrame(this.scrollAnimationFrame);
 
     const {speed, sensitivity} = this.options;
+    const [sensitivityTop, sensitivityRight, sensitivityBottom, sensitivityLeft] = sensitivity;
 
     const rect = this.scrollableElement.getBoundingClientRect();
     const bottomCutOff = rect.bottom > window.innerHeight;
@@ -215,29 +216,29 @@ export default class Scrollable extends AbstractPlugin {
     if (scrollableElement !== document.body && scrollableElement !== document.documentElement && !cutOff) {
       const {offsetHeight, offsetWidth} = scrollableElement;
 
-      if (rect.top + offsetHeight - clientY < sensitivity) {
+      if (rect.top + offsetHeight - clientY < sensitivityBottom) {
         scrollableElement.scrollTop += speed;
-      } else if (clientY - rect.top < sensitivity) {
+      } else if (clientY - rect.top < sensitivityTop) {
         scrollableElement.scrollTop -= speed;
       }
 
-      if (rect.left + offsetWidth - clientX < sensitivity) {
+      if (rect.left + offsetWidth - clientX < sensitivityRight) {
         scrollableElement.scrollLeft += speed;
-      } else if (clientX - rect.left < sensitivity) {
+      } else if (clientX - rect.left < sensitivityLeft) {
         scrollableElement.scrollLeft -= speed;
       }
     } else {
       const {innerHeight, innerWidth} = window;
 
-      if (clientY < sensitivity) {
+      if (clientY < sensitivityTop) {
         documentScrollingElement.scrollTop -= speed;
-      } else if (innerHeight - clientY < sensitivity) {
+      } else if (innerHeight - clientY < sensitivityBottom) {
         documentScrollingElement.scrollTop += speed;
       }
 
-      if (clientX < sensitivity) {
+      if (clientX < sensitivityLeft) {
         documentScrollingElement.scrollLeft -= speed;
-      } else if (innerWidth - clientX < sensitivity) {
+      } else if (innerWidth - clientX < sensitivityRight) {
         documentScrollingElement.scrollLeft += speed;
       }
     }
